@@ -1,0 +1,26 @@
+---
+db:
+  # driverName: sqlite3
+  # sqlite3:
+  #   file: app.db
+  driverName: mysql
+  mysql:
+    username: user
+    password: password
+    host: 127.0.0.1
+    port: 3326
+    database: development
+auth:
+  username: user
+  password: password
+cors:
+  allowOrigins:
+    - "*"
+shutdown:
+  timeSec1: 1
+  timeSec2: 1
+log:
+  level: info
+debug:
+  ginMode: true
+  wait: true
