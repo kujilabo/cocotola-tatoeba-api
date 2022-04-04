@@ -32,7 +32,7 @@ func initMySQL() {
 
 	testDBPort = os.Getenv("TEST_DB_PORT")
 	if testDBPort == "" {
-		testDBPort = "3307"
+		testDBPort = "3327"
 	}
 
 	testDBURL = fmt.Sprintf("user:password@tcp(%s:%s)/testdb?charset=utf8&parseTime=True&loc=Asia%%2FTokyo", testDBHost, testDBPort)

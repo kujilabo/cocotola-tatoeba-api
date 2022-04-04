@@ -12,7 +12,7 @@ jobs:
       - name: Setup MySQL
         uses: mirromutth/mysql-action@v1.1
         with:
-          host port: 3317
+          host port: 3327
           mysql version: "5.7"
           mysql database: "testdb"
           mysql user: "user"
