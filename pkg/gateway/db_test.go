@@ -42,7 +42,7 @@ func setupDB(db *gorm.DB, driverName string, withInstance func(sqlDB *sql.DB) (d
 	if err != nil {
 		log.Fatal(err)
 	}
-	pos := strings.Index(wd, "pkg_plugin")
+	pos := strings.Index(wd, "pkg")
 	dir := wd[0:pos] + "sqls/" + driverName
 
 	driver, err := withInstance(sqlDB)
