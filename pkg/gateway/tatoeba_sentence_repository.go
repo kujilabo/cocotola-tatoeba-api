@@ -3,7 +3,6 @@ package gateway
 import (
 	"context"
 	"errors"
-	"fmt"
 	"math/rand"
 	"strings"
 	"time"
@@ -309,10 +308,6 @@ func (r *tatoebaSentenceRepository) ContainsSentenceBySentenceNumber(ctx context
 		return false, result.Error
 	}
 
-	if sentenceNumber == 997856 {
-		fmt.Printf("%d,%+v\n", sentenceNumber, entity)
-		panic(nil)
-	}
 	return true, nil
 }
 

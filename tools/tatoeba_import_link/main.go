@@ -12,6 +12,8 @@ import (
 	"github.com/kujilabo/cocotola-tatoeba-api/pkg/config"
 )
 
+var timeoutImportMin = 20
+
 func main() {
 	cfg, err := config.LoadConfig("local")
 	if err != nil {
@@ -53,7 +55,7 @@ func main() {
 	req.Header.Set("Content-Type", mw.FormDataContentType())
 
 	client := http.Client{
-		Timeout: time.Duration(20) * time.Minute,
+		Timeout: time.Duration(timeoutImportMin) * time.Minute,
 	}
 
 	resp, err := client.Do(req)
