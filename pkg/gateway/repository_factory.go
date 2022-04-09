@@ -25,5 +25,5 @@ func (f *repositoryFactory) NewTatoebaSentenceRepository(ctx context.Context) (s
 }
 
 func (f *repositoryFactory) NewTatoebaLinkRepository(ctx context.Context) (service.TatoebaLinkRepository, error) {
-	return NewTatoebaLinkRepository(f.db), nil
+	return NewTatoebaLinkRepository(f.db)
 }

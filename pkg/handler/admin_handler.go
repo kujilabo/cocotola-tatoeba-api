@@ -33,6 +33,17 @@ func NewAdminHandler(adminUsecase usecase.AdminUsecase, newTatoebaSentenceAddPar
 	}
 }
 
+// ImportSentences godoc
+// @Summary     import sentences
+// @Description import sentences
+// @Tags        tatoeba
+// @Accept      json
+// @Produce     json
+// @Param       file formData file true "***_sentences_detailed.tsv"
+// @Success     200
+// @Failure     400
+// @Router      /v1/admin/sentence/import [post]
+// @Security    BasicAuth
 func (h *adminHandler) ImportSentences(c *gin.Context) {
 	ctx := c.Request.Context()
 	logger := log.FromContext(ctx)
@@ -40,6 +51,11 @@ func (h *adminHandler) ImportSentences(c *gin.Context) {
 		file, err := c.FormFile("file")
 		if err != nil {
 			if errors.Is(err, http.ErrMissingFile) {
+				logger.Warnf("err: %+v", err)
+				c.Status(http.StatusBadRequest)
+				return nil
+			}
+			if errors.Is(err, http.ErrNotMultipart) {
 				logger.Warnf("err: %+v", err)
 				c.Status(http.StatusBadRequest)
 				return nil
@@ -64,6 +80,17 @@ func (h *adminHandler) ImportSentences(c *gin.Context) {
 	}, h.errorHandle)
 }
 
+// ImportLinks godoc
+// @Summary     import links
+// @Description import links
+// @Tags        tatoeba
+// @Accept      json
+// @Produce     json
+// @Param       file formData file true "links.csv"
+// @Success     200
+// @Failure     400
+// @Router      /v1/admin/link/import [post]
+// @Security    BasicAuth
 func (h *adminHandler) ImportLinks(c *gin.Context) {
 	ctx := c.Request.Context()
 	logger := log.FromContext(ctx)
@@ -71,6 +98,11 @@ func (h *adminHandler) ImportLinks(c *gin.Context) {
 		file, err := c.FormFile("file")
 		if err != nil {
 			if errors.Is(err, http.ErrMissingFile) {
+				logger.Warnf("err: %+v", err)
+				c.Status(http.StatusBadRequest)
+				return nil
+			}
+			if errors.Is(err, http.ErrNotMultipart) {
 				logger.Warnf("err: %+v", err)
 				c.Status(http.StatusBadRequest)
 				return nil

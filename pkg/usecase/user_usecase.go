@@ -9,7 +9,9 @@ import (
 )
 
 type UserUsecase interface {
-	FindSentences(ctx context.Context, param service.TatoebaSentenceSearchCondition) (*service.TatoebaSentenceSearchResult, error)
+	FindSentencePairs(ctx context.Context, param service.TatoebaSentenceSearchCondition) (service.TatoebaSentencePairSearchResult, error)
+
+	FindSentenceBySentenceNumber(ctx context.Context, sentenceNumber int) (service.TatoebaSentence, error)
 }
 
 type userUsecase struct {
@@ -24,8 +26,8 @@ func NewUserUsecase(db *gorm.DB, rf service.RepositoryFactoryFunc) UserUsecase {
 	}
 }
 
-func (u *userUsecase) FindSentences(ctx context.Context, param service.TatoebaSentenceSearchCondition) (*service.TatoebaSentenceSearchResult, error) {
-	var result *service.TatoebaSentenceSearchResult
+func (u *userUsecase) FindSentencePairs(ctx context.Context, param service.TatoebaSentenceSearchCondition) (service.TatoebaSentencePairSearchResult, error) {
+	var result service.TatoebaSentencePairSearchResult
 	if err := u.db.Transaction(func(tx *gorm.DB) error {
 		rf, err := u.rf(ctx, tx)
 		if err != nil {
@@ -37,7 +39,32 @@ func (u *userUsecase) FindSentences(ctx context.Context, param service.TatoebaSe
 			return err
 		}
 
-		tmpResult, err := repo.FindTatoebaSentences(ctx, param)
+		tmpResult, err := repo.FindTatoebaSentencePairs(ctx, param)
+		if err != nil {
+			return err
+		}
+		result = tmpResult
+		return nil
+	}); err != nil {
+		return nil, err
+	}
+	return result, nil
+}
+
+func (u *userUsecase) FindSentenceBySentenceNumber(ctx context.Context, sentenceNumber int) (service.TatoebaSentence, error) {
+	var result service.TatoebaSentence
+	if err := u.db.Transaction(func(tx *gorm.DB) error {
+		rf, err := u.rf(ctx, tx)
+		if err != nil {
+			return err
+		}
+
+		repo, err := rf.NewTatoebaSentenceRepository(ctx)
+		if err != nil {
+			return err
+		}
+
+		tmpResult, err := repo.FindTatoebaSentenceBySentenceNumber(ctx, sentenceNumber)
 		if err != nil {
 			return err
 		}

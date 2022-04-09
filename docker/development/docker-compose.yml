@@ -1,8 +1,8 @@
 ---
-dev-mysql:
+dev-tatoeba-mysql:
   image: mysql:8.0.27
   container_name: dev-tatoeba-mysql
-  command: mysqld --character-set-server=utf8mb4
+  command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_bin
   environment:
     MYSQL_ROOT_PASSWORD: mysql
     MYSQL_PORT: 3306
@@ -11,3 +11,5 @@ dev-mysql:
     MYSQL_PASSWORD: password
   ports:
     - 3326:3306
+  volumes:
+    - "./mysql-data:/var/lib/mysql"

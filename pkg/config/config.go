@@ -12,6 +12,10 @@ import (
 	lib "github.com/kujilabo/cocotola-tatoeba-api/pkg_lib/domain"
 )
 
+type AppConfig struct {
+	Port int `yaml:"port" validate:"required"`
+}
+
 type SQLite3Config struct {
 	File string `yaml:"file" validate:"required"`
 }
@@ -35,10 +39,6 @@ type AuthConfig struct {
 	Password string `yaml:"password" validate:"required"`
 }
 
-type AzureConfig struct {
-	SubscriptionKey string `yaml:"subscriptionKey" validate:"required"`
-}
-
 type CORSConfig struct {
 	AllowOrigins []string `yaml:"allowOrigins"`
 }
@@ -57,14 +57,20 @@ type DebugConfig struct {
 	Wait    bool `yaml:"wait"`
 }
 
+type SwaggerConfig struct {
+	Host   string `yaml:"host"`
+	Schema string `yaml:"schema"`
+}
+
 type Config struct {
+	App      *AppConfig      `yaml:"app" validate:"required"`
 	DB       *DBConfig       `yaml:"db" validate:"required"`
 	Auth     *AuthConfig     `yaml:"auth" validate:"required"`
-	Azure    *AzureConfig    `yaml:"azure" validate:"required"`
 	CORS     *CORSConfig     `yaml:"cors" validate:"required"`
 	Shutdown *ShutdownConfig `yaml:"shutdown" validate:"required"`
 	Log      *LogConfig      `yaml:"log" validate:"required"`
 	Debug    *DebugConfig    `yaml:"debug"`
+	Swagger  *SwaggerConfig  `yaml:"swagger" validate:"required"`
 }
 
 func LoadConfig(env string) (*Config, error) {

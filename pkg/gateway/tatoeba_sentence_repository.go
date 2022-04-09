@@ -2,6 +2,8 @@ package gateway
 
 import (
 	"context"
+	"errors"
+	"fmt"
 	"math/rand"
 	"strings"
 	"time"
@@ -27,6 +29,7 @@ type tatoebaSentenceEntity struct {
 	Author         string
 	UpdatedAt      time.Time
 }
+
 type tatoebaSentencePairEntity struct {
 	SrcSentenceNumber int
 	SrcLang           string
@@ -146,14 +149,14 @@ func NewTatoebaSentenceRepository(db *gorm.DB) (service.TatoebaSentenceRepositor
 
 // where t1.lang='eng' and t3.lang='jpn';
 
-func (r *tatoebaSentenceRepository) FindTatoebaSentences(ctx context.Context, param service.TatoebaSentenceSearchCondition) (*service.TatoebaSentenceSearchResult, error) {
+func (r *tatoebaSentenceRepository) FindTatoebaSentencePairs(ctx context.Context, param service.TatoebaSentenceSearchCondition) (service.TatoebaSentencePairSearchResult, error) {
 	if param.IsRandom() {
 		return r.findTatoebaSentencesByRandom(ctx, param)
 	}
 	return r.findTatoebaSentences(ctx, param)
 }
 
-func (r *tatoebaSentenceRepository) findTatoebaSentences(ctx context.Context, param service.TatoebaSentenceSearchCondition) (*service.TatoebaSentenceSearchResult, error) {
+func (r *tatoebaSentenceRepository) findTatoebaSentences(ctx context.Context, param service.TatoebaSentenceSearchCondition) (service.TatoebaSentencePairSearchResult, error) {
 	logger := log.FromContext(ctx)
 	logger.Debug("tatoebaSentenceRepository.FindTatoebaSentences")
 	limit := param.GetPageSize()
@@ -211,10 +214,7 @@ func (r *tatoebaSentenceRepository) findTatoebaSentences(ctx context.Context, pa
 	// 	return nil, result.Error
 	// }
 
-	return &service.TatoebaSentenceSearchResult{
-		TotalCount: count,
-		Results:    results,
-	}, nil
+	return service.NewTatoebaSentencePairSearchResult(int(count), results), nil
 }
 
 func min(x, y int) int {
@@ -224,7 +224,7 @@ func min(x, y int) int {
 	return y
 }
 
-func (r *tatoebaSentenceRepository) findTatoebaSentencesByRandom(ctx context.Context, param service.TatoebaSentenceSearchCondition) (*service.TatoebaSentenceSearchResult, error) {
+func (r *tatoebaSentenceRepository) findTatoebaSentencesByRandom(ctx context.Context, param service.TatoebaSentenceSearchCondition) (service.TatoebaSentencePairSearchResult, error) {
 	logger := log.FromContext(ctx)
 	logger.Debug("tatoebaSentenceRepository.FindTatoebaSentences")
 	limit := param.GetPageSize() * shuffleBufferRate
@@ -281,16 +281,13 @@ func (r *tatoebaSentenceRepository) findTatoebaSentencesByRandom(ctx context.Con
 	// 	return nil, result.Error
 	// }
 
-	return &service.TatoebaSentenceSearchResult{
-		TotalCount: count,
-		Results:    results,
-	}, nil
+	return service.NewTatoebaSentencePairSearchResult(int(count), results), nil
 }
 
 func (r *tatoebaSentenceRepository) FindTatoebaSentenceBySentenceNumber(ctx context.Context, sentenceNumber int) (service.TatoebaSentence, error) {
 	entity := tatoebaSentenceEntity{}
 	if result := r.db.Where("sentence_number = ?", sentenceNumber).
-		Find(&entity); result.Error != nil {
+		First(&entity); result.Error != nil {
 		return nil, result.Error
 	}
 
@@ -300,6 +297,23 @@ func (r *tatoebaSentenceRepository) FindTatoebaSentenceBySentenceNumber(ctx cont
 	}
 
 	return sentence, nil
+}
+
+func (r *tatoebaSentenceRepository) ContainsSentenceBySentenceNumber(ctx context.Context, sentenceNumber int) (bool, error) {
+	entity := tatoebaSentenceEntity{}
+	if result := r.db.Where("sentence_number = ?", sentenceNumber).
+		First(&entity); result.Error != nil {
+		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+			return false, nil
+		}
+		return false, result.Error
+	}
+
+	if sentenceNumber == 997856 {
+		fmt.Printf("%d,%+v\n", sentenceNumber, entity)
+		panic(nil)
+	}
+	return true, nil
 }
 
 func (r *tatoebaSentenceRepository) Add(ctx context.Context, param service.TatoebaSentenceAddParameter) error {

@@ -11,17 +11,17 @@ func ToTatoebaSentenceSearchCondition(ctx context.Context, param *entity.Tatoeba
 	return service.NewTatoebaSentenceSearchCondition(param.PageNo, param.PageSize, param.Keyword, param.Random)
 }
 
-func ToTatoebaSentenceResponse(ctx context.Context, result *service.TatoebaSentenceSearchResult) (*entity.TatoebaSentenceFindResponse, error) {
-	entities := make([]entity.TatoebaSentencePair, len(result.Results))
-	for i, m := range result.Results {
-		src := entity.TatoebaSentence{
+func ToTatoebaSentenceFindResponse(ctx context.Context, result service.TatoebaSentencePairSearchResult) (*entity.TatoebaSentencePairFindResponse, error) {
+	entities := make([]entity.TatoebaSentencePair, len(result.GetResults()))
+	for i, m := range result.GetResults() {
+		src := entity.TatoebaSentenceResponse{
 			SentenceNumber: m.GetSrc().GetSentenceNumber(),
 			Lang:           m.GetSrc().GetLang().String(),
 			Text:           m.GetSrc().GetText(),
 			Author:         m.GetSrc().GetAuthor(),
 			UpdatedAt:      m.GetSrc().GetUpdatedAt(),
 		}
-		dst := entity.TatoebaSentence{
+		dst := entity.TatoebaSentenceResponse{
 			SentenceNumber: m.GetDst().GetSentenceNumber(),
 			Lang:           m.GetDst().GetLang().String(),
 			Text:           m.GetDst().GetText(),
@@ -34,8 +34,18 @@ func ToTatoebaSentenceResponse(ctx context.Context, result *service.TatoebaSente
 		}
 	}
 
-	return &entity.TatoebaSentenceFindResponse{
-		TotalCount: result.TotalCount,
+	return &entity.TatoebaSentencePairFindResponse{
+		TotalCount: result.GetTotalCount(),
 		Results:    entities,
+	}, nil
+}
+
+func ToTatoebaSentenceResponse(ctx context.Context, result service.TatoebaSentence) (*entity.TatoebaSentenceResponse, error) {
+	return &entity.TatoebaSentenceResponse{
+		SentenceNumber: result.GetSentenceNumber(),
+		Lang:           result.GetLang().String(),
+		Text:           result.GetText(),
+		Author:         result.GetAuthor(),
+		UpdatedAt:      result.GetUpdatedAt(),
 	}, nil
 }

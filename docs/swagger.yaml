@@ -1,4 +1,154 @@
+definitions:
+  entity.TatoebaSentenceFindParameter:
+    properties:
+      keyword:
+        type: string
+      pageNo:
+        minimum: 1
+        type: integer
+      pageSize:
+        minimum: 1
+        type: integer
+      random:
+        type: boolean
+    required:
+    - pageNo
+    - pageSize
+    type: object
+  entity.TatoebaSentencePair:
+    properties:
+      dst:
+        $ref: '#/definitions/entity.TatoebaSentenceResponse'
+      src:
+        $ref: '#/definitions/entity.TatoebaSentenceResponse'
+    type: object
+  entity.TatoebaSentencePairFindResponse:
+    properties:
+      results:
+        items:
+          $ref: '#/definitions/entity.TatoebaSentencePair'
+        type: array
+      totalCount:
+        type: integer
+    type: object
+  entity.TatoebaSentenceResponse:
+    properties:
+      author:
+        type: string
+      lang:
+        type: string
+      sentenceNumber:
+        type: integer
+      text:
+        type: string
+      updatedAt:
+        type: string
+    type: object
 info:
   contact: {}
-paths: {}
+paths:
+  /v1/admin/link/import:
+    post:
+      consumes:
+      - application/json
+      description: import links
+      parameters:
+      - description: links.csv
+        in: formData
+        name: file
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+        "400":
+          description: ""
+      security:
+      - BasicAuth: []
+      summary: import links
+      tags:
+      - tatoeba
+  /v1/admin/sentence/import:
+    post:
+      consumes:
+      - application/json
+      description: import sentences
+      parameters:
+      - description: '***_sentences_detailed.tsv'
+        in: formData
+        name: file
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+        "400":
+          description: ""
+      security:
+      - BasicAuth: []
+      summary: import sentences
+      tags:
+      - tatoeba
+  /v1/user/sentence/{sentenceNumber}:
+    get:
+      consumes:
+      - application/json
+      description: import links
+      parameters:
+      - description: Sentence number
+        in: path
+        name: sentenceNumber
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.TatoebaSentenceResponse'
+        "400":
+          description: ""
+        "401":
+          description: ""
+      security:
+      - BasicAuth: []
+      summary: import links
+      tags:
+      - tatoeba
+  /v1/user/sentence_pair/find:
+    post:
+      consumes:
+      - application/json
+      description: import links
+      parameters:
+      - description: parameter to find sentences
+        in: body
+        name: param
+        required: true
+        schema:
+          $ref: '#/definitions/entity.TatoebaSentenceFindParameter'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.TatoebaSentencePairFindResponse'
+        "400":
+          description: ""
+        "401":
+          description: ""
+      security:
+      - BasicAuth: []
+      summary: import links
+      tags:
+      - tatoeba
+securityDefinitions:
+  BasicAuth:
+    type: basic
 swagger: "2.0"

@@ -3,6 +3,7 @@ package gateway
 import (
 	"context"
 	"errors"
+	"fmt"
 
 	"golang.org/x/xerrors"
 	"gorm.io/gorm"
@@ -12,7 +13,8 @@ import (
 )
 
 type tatoebaLinkRepository struct {
-	db *gorm.DB
+	db           *gorm.DB
+	sentenceRepo service.TatoebaSentenceRepository
 }
 
 type tatoebaLinkEntity struct {
@@ -24,13 +26,34 @@ func (e *tatoebaLinkEntity) TableName() string {
 	return "tatoeba_link"
 }
 
-func NewTatoebaLinkRepository(db *gorm.DB) service.TatoebaLinkRepository {
-	return &tatoebaLinkRepository{
-		db: db,
+func NewTatoebaLinkRepository(db *gorm.DB) (service.TatoebaLinkRepository, error) {
+	sentenceRepo, err := NewTatoebaSentenceRepository(db)
+	if err != nil {
+		return nil, err
 	}
+
+	return &tatoebaLinkRepository{
+		db:           db,
+		sentenceRepo: sentenceRepo,
+	}, nil
 }
 
 func (r *tatoebaLinkRepository) Add(ctx context.Context, param service.TatoebaLinkAddParameter) error {
+
+	fromContained, err := r.sentenceRepo.ContainsSentenceBySentenceNumber(ctx, param.GetFrom())
+	if err != nil {
+		return err
+	}
+
+	toContained, err := r.sentenceRepo.ContainsSentenceBySentenceNumber(ctx, param.GetTo())
+	if err != nil {
+		return err
+	}
+
+	if !fromContained || !toContained {
+		return service.ErrTatoebaSentenceNotFound
+	}
+
 	entity := tatoebaLinkEntity{
 		From: param.GetFrom(),
 		To:   param.GetTo(),
@@ -42,6 +65,7 @@ func (r *tatoebaLinkRepository) Add(ctx context.Context, param service.TatoebaLi
 		}
 
 		if err := libG.ConvertRelationError(result.Error, service.ErrTatoebaLinkSourceNotFound); errors.Is(err, service.ErrTatoebaLinkSourceNotFound) {
+			fmt.Printf("relation %v, %v\n", fromContained, toContained)
 			// nothing
 			return nil
 		}
