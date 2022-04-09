@@ -37,7 +37,9 @@ func NewAdminUsecase(db *gorm.DB, rf service.RepositoryFactoryFunc) AdminUsecase
 func (u *adminUsecase) ImportSentences(ctx context.Context, iterator service.TatoebaSentenceAddParameterIterator) error {
 	logger := log.FromContext(ctx)
 
-	var count = 0
+	var readCount = 0
+	var importCount = 0
+	var skipCount = 0
 	var loop = true
 	for loop {
 		if err := u.db.Transaction(func(tx *gorm.DB) error {
@@ -58,23 +60,27 @@ func (u *adminUsecase) ImportSentences(ctx context.Context, iterator service.Tat
 					loop = false
 					break
 				}
+				readCount++
 				if err != nil {
 					return err
 				}
+
 				if param == nil {
-					// logger.Infof("skip count: %d", count)
+					skipCount++
 					continue
 				}
 
 				if err := repo.Add(ctx, param); err != nil {
-					logger.Warnf("failed to Add. count: %d, err: %v", count, err)
+					logger.Warnf("failed to Add. read count: %d, err: %v", readCount, err)
+					skipCount++
 					continue
 				}
+
 				i++
-				count++
+				importCount++
 				if i >= commitSize {
-					if count%logSize == 0 {
-						logger.Infof("commit count: %d", count)
+					if importCount%logSize == 0 {
+						logger.Infof("imported count: %d", importCount)
 					}
 					break
 				}
@@ -86,13 +92,19 @@ func (u *adminUsecase) ImportSentences(ctx context.Context, iterator service.Tat
 		}
 	}
 
+	logger.Infof("imported count: %d", importCount)
+	logger.Infof("skipped count: %d", skipCount)
+	logger.Infof("read count: %d", readCount)
+
 	return nil
 }
 
 func (u *adminUsecase) ImportLinks(ctx context.Context, iterator service.TatoebaLinkAddParameterIterator) error {
 	logger := log.FromContext(ctx)
 
-	var count = 0
+	var readCount = 0
+	var importCount = 0
+	var skipCount = 0
 	var loop = true
 	for loop {
 		if err := u.db.Transaction(func(tx *gorm.DB) error {
@@ -113,23 +125,27 @@ func (u *adminUsecase) ImportLinks(ctx context.Context, iterator service.Tatoeba
 					loop = false
 					break
 				}
+				readCount++
 				if err != nil {
 					return err
 				}
 				if param == nil {
-					logger.Infof("skip to Add Link. count: %d", count)
+					skipCount++
 					continue
 				}
 
 				if err := repo.Add(ctx, param); err != nil {
-					logger.Warnf("failed to Add Link. count: %d", count)
+					if !errors.Is(err, service.ErrTatoebaSentenceNotFound) {
+						logger.Warnf("failed to Add. read count: %d, err: %v", readCount, err)
+					}
+					skipCount++
 					continue
 				}
 				i++
-				count++
+				importCount++
 				if i >= commitSize {
-					if count%logSize == 0 {
-						logger.Infof("commit count: %d", count)
+					if importCount%logSize == 0 {
+						logger.Infof("imported count: %d", importCount)
 					}
 					break
 				}
@@ -140,6 +156,10 @@ func (u *adminUsecase) ImportLinks(ctx context.Context, iterator service.Tatoeba
 			return err
 		}
 	}
+
+	logger.Infof("imported count: %d", importCount)
+	logger.Infof("skipped count: %d", skipCount)
+	logger.Infof("read count: %d", readCount)
 
 	return nil
 }

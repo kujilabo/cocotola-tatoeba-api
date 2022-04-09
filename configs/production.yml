@@ -1,4 +1,6 @@
 ---
+app:
+  port: 8080
 db:
   driverName: mysql
   mysql:
@@ -14,10 +16,13 @@ cors:
   allowOrigins:
     - "https://www.cocotola.com"
 shutdown:
-  timeSec1: 1
-  timeSec2: 1
+  timeSec1: 10
+  timeSec2: 10
 log:
   level: debug
 debug:
   ginMode: false
   wait: false
+swagger:
+  host: cocotola.com
+  schema: https

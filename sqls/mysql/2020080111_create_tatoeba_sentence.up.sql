@@ -5,4 +5,4 @@ create table `tatoeba_sentence` (
 ,`author` varchar(20) character set ascii not null
 ,`updated_at` datetime not null
 ,primary key(`sentence_number`)
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;

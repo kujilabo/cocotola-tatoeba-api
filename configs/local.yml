@@ -1,4 +1,6 @@
 ---
+app:
+  port: 8280
 db:
   # driverName: sqlite3
   # sqlite3:
@@ -24,3 +26,6 @@ log:
 debug:
   ginMode: true
   wait: true
+swagger:
+  host: localhost:8280
+  schema: http

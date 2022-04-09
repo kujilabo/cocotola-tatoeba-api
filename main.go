@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"strconv"
 	"syscall"
 	"time"
 
@@ -32,6 +33,7 @@ import (
 	"github.com/kujilabo/cocotola-tatoeba-api/pkg_lib/handler/middleware"
 )
 
+// @securityDefinitions.basic BasicAuth
 func main() {
 	sigs := make(chan os.Signal, 1)
 	done := make(chan bool, 1)
@@ -97,24 +99,23 @@ func main() {
 			admin.POST("link/import", adminHandler.ImportLinks)
 		}
 		{
-			admin := v1.Group("user")
+			user := v1.Group("user")
 			userHandler := handler.NewUserHandler(userUsecase)
-			admin.GET("find", userHandler.FindSentences)
+			user.POST("sentence_pair/find", userHandler.FindSentencePairs)
+			user.GET("sentence/:sentenceNumber", userHandler.FindSentenceBySentenceNumber)
 		}
 	}
 
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
-	docs.SwaggerInfo.Title = "Swagger Example API"
-	docs.SwaggerInfo.Description = "This is a sample server Petstore server."
+	docs.SwaggerInfo.Title = "Cocotola tatoeba API"
 	docs.SwaggerInfo.Version = "1.0"
-	docs.SwaggerInfo.Host = "cocotola.com"
-	docs.SwaggerInfo.BasePath = "/v1"
-	docs.SwaggerInfo.Schemes = []string{"https"}
+	docs.SwaggerInfo.Host = cfg.Swagger.Host
+	docs.SwaggerInfo.Schemes = []string{cfg.Swagger.Schema}
 
 	gracefulShutdownTime1 := time.Duration(cfg.Shutdown.TimeSec1) * time.Second
 	gracefulShutdownTime2 := time.Duration(cfg.Shutdown.TimeSec2) * time.Second
 	server := http.Server{
-		Addr:    ":8180",
+		Addr:    ":" + strconv.Itoa(cfg.App.Port),
 		Handler: router,
 	}
 

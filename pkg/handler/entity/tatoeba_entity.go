@@ -9,19 +9,20 @@ type TatoebaSentenceFindParameter struct {
 	Random   bool   `json:"random"`
 }
 
-type TatoebaSentence struct {
+type TatoebaSentenceResponse struct {
 	SentenceNumber int       `json:"sentenceNumber"`
 	Lang           string    `json:"lang"`
 	Text           string    `json:"text"`
 	Author         string    `json:"author"`
 	UpdatedAt      time.Time `json:"updatedAt"`
 }
+
 type TatoebaSentencePair struct {
-	Src TatoebaSentence `json:"src"`
-	Dst TatoebaSentence `json:"dst"`
+	Src TatoebaSentenceResponse `json:"src"`
+	Dst TatoebaSentenceResponse `json:"dst"`
 }
 
-type TatoebaSentenceFindResponse struct {
-	TotalCount int64                 `json:"totalCount"`
+type TatoebaSentencePairFindResponse struct {
+	TotalCount int                   `json:"totalCount"`
 	Results    []TatoebaSentencePair `json:"results"`
 }

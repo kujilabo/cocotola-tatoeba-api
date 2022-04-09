@@ -12,6 +12,7 @@ require (
 	github.com/mattn/go-sqlite3 v1.14.12
 	github.com/onrik/gorm-logrus v0.3.0
 	github.com/onrik/logrus v0.9.0
+	github.com/pkg/profile v1.6.0
 	github.com/sirupsen/logrus v1.8.1
 	github.com/stretchr/testify v1.7.0
 	github.com/swaggo/files v0.0.0-20210815190702-a29dd2bc99b2

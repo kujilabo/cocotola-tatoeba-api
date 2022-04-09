@@ -14,7 +14,8 @@ import (
 )
 
 func OpenMySQL(username, password, host string, port int, database string) (*gorm.DB, error) {
-	dsn := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8&parseTime=True&multiStatements=true", username, password, host, port, database)
+	// dsn := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8&parseTime=True&multiStatements=true&&collation=utf8mb4_bin",
+	dsn := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?parseTime=True&multiStatements=true&&collation=utf8mb4_bin", username, password, host, port, database)
 	return gorm.Open(mysql.Open(dsn), &gorm.Config{
 		Logger: gorm_logrus.New(),
 	})
