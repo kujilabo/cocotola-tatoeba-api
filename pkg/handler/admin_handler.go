@@ -37,11 +37,11 @@ func NewAdminHandler(adminUsecase usecase.AdminUsecase, newTatoebaSentenceAddPar
 // @Summary     import sentences
 // @Description import sentences
 // @Tags        tatoeba
-// @Accept      json
-// @Produce     json
 // @Param       file formData file true "***_sentences_detailed.tsv"
 // @Success     200
 // @Failure     400
+// @Failure     401
+// @Failure     500
 // @Router      /v1/admin/sentence/import [post]
 // @Security    BasicAuth
 func (h *adminHandler) ImportSentences(c *gin.Context) {
@@ -84,11 +84,11 @@ func (h *adminHandler) ImportSentences(c *gin.Context) {
 // @Summary     import links
 // @Description import links
 // @Tags        tatoeba
-// @Accept      json
-// @Produce     json
 // @Param       file formData file true "links.csv"
 // @Success     200
 // @Failure     400
+// @Failure     401
+// @Failure     500
 // @Router      /v1/admin/link/import [post]
 // @Security    BasicAuth
 func (h *adminHandler) ImportLinks(c *gin.Context) {

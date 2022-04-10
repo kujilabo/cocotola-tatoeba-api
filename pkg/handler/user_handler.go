@@ -45,12 +45,15 @@ func NewUserHandler(userUsecase usecase.UserUsecase) UserHandler {
 // @Security    BasicAuth
 func (h *userHandler) FindSentencePairs(c *gin.Context) {
 	ctx := c.Request.Context()
+	logger := log.FromContext(ctx)
+
 	handlerhelper.HandleFunction(c, func() error {
 		param := entity.TatoebaSentenceFindParameter{}
 		if err := c.ShouldBindJSON(&param); err != nil {
 			c.Status(http.StatusBadRequest)
 			return nil
 		}
+		logger.Debugf("FindSentencePairs. param: %+v", param)
 		parameter, err := converter.ToTatoebaSentenceSearchCondition(ctx, &param)
 		if err != nil {
 			return err
