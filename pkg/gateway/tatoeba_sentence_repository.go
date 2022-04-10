@@ -149,6 +149,8 @@ func NewTatoebaSentenceRepository(db *gorm.DB) (service.TatoebaSentenceRepositor
 // where t1.lang='eng' and t3.lang='jpn';
 
 func (r *tatoebaSentenceRepository) FindTatoebaSentencePairs(ctx context.Context, param service.TatoebaSentenceSearchCondition) (service.TatoebaSentencePairSearchResult, error) {
+	logger := log.FromContext(ctx)
+	logger.Debugf("keyword: %s, random: %v", param.GetKeyword(), param.IsRandom())
 	if param.IsRandom() {
 		return r.findTatoebaSentencesByRandom(ctx, param)
 	}
