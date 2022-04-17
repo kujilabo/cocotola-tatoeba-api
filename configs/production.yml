@@ -1,7 +1,11 @@
 ---
 app:
+  name: cocotola-tatoeba-api
   port: 8080
 db:
+  # driverName: sqlite3
+  # sqlite3:
+  #   file: app.db
   driverName: mysql
   mysql:
     username: $MYSQL_USERNAME
@@ -12,6 +16,8 @@ db:
 auth:
   username: $AUTH_USERNAME
   password: $AUTH_PASSWORD
+trace:
+  exporter: gcp
 cors:
   allowOrigins:
     - "https://www.cocotola.com"
@@ -20,9 +26,9 @@ shutdown:
   timeSec2: 10
 log:
   level: debug
-debug:
-  ginMode: false
-  wait: false
 swagger:
   host: cocotola.com
   schema: https
+debug:
+  ginMode: false
+  wait: false

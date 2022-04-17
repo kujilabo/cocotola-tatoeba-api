@@ -1,5 +1,6 @@
 ---
 app:
+  name: cocotola-tatoeba-api
   port: 8280
 db:
   # driverName: sqlite3
@@ -15,6 +16,10 @@ db:
 auth:
   username: user
   password: password
+trace:
+  exporter: jaeger
+  jaeger:
+    endpoint: http://localhost:14268/api/traces
 cors:
   allowOrigins:
     - "*"
@@ -23,9 +28,9 @@ shutdown:
   timeSec2: 1
 log:
   level: info
-debug:
-  ginMode: true
-  wait: true
 swagger:
   host: localhost:8280
   schema: http
+debug:
+  ginMode: true
+  wait: false
