@@ -4,12 +4,11 @@ import (
 	"database/sql"
 
 	"github.com/golang-migrate/migrate/v4/database"
+	migrate_sqlite3 "github.com/golang-migrate/migrate/v4/database/sqlite3"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
 	gorm_logrus "github.com/onrik/gorm-logrus"
-	"gorm.io/gorm"
-
-	migrate_sqlite3 "github.com/golang-migrate/migrate/v4/database/sqlite3"
 	"gorm.io/driver/sqlite"
+	"gorm.io/gorm"
 )
 
 func OpenSQLite(filePath string) (*gorm.DB, error) {
