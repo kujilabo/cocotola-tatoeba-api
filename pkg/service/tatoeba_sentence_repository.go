@@ -1,3 +1,9 @@
+//go:generate mockery --output mock --name TatoebaSentence
+//go:generate mockery --output mock --name TatoebaSentencePair
+//go:generate mockery --output mock --name TatoebaSentenceAddParameter
+//go:generate mockery --output mock --name TatoebaSentenceSearchCondition
+//go:generate mockery --output mock --name TatoebaSentencePairSearchResult
+//go:generate mockery --output mock --name TatoebaSentenceRepository
 package service
 
 import (
