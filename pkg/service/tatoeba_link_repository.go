@@ -1,3 +1,5 @@
+//go:generate mockery --output mock --name TatoebaLinkAddParameter
+//go:generate mockery --output mock --name TatoebaLinkRepository
 package service
 
 import (

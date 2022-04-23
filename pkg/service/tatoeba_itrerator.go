@@ -1,3 +1,5 @@
+//go:generate mockery --output mock --name TatoebaLinkAddParameterIterator
+//go:generate mockery --output mock --name TatoebaSentenceAddParameterIterator
 package service
 
 import "context"
