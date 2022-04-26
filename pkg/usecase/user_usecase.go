@@ -15,21 +15,21 @@ type UserUsecase interface {
 }
 
 type userUsecase struct {
-	db *gorm.DB
-	rf service.RepositoryFactoryFunc
+	db     *gorm.DB
+	rfFunc service.RepositoryFactoryFunc
 }
 
-func NewUserUsecase(db *gorm.DB, rf service.RepositoryFactoryFunc) UserUsecase {
+func NewUserUsecase(db *gorm.DB, rfFunc service.RepositoryFactoryFunc) UserUsecase {
 	return &userUsecase{
-		db: db,
-		rf: rf,
+		db:     db,
+		rfFunc: rfFunc,
 	}
 }
 
 func (u *userUsecase) FindSentencePairs(ctx context.Context, param service.TatoebaSentenceSearchCondition) (service.TatoebaSentencePairSearchResult, error) {
 	var result service.TatoebaSentencePairSearchResult
 	if err := u.db.Transaction(func(tx *gorm.DB) error {
-		rf, err := u.rf(ctx, tx)
+		rf, err := u.rfFunc(ctx, tx)
 		if err != nil {
 			return err
 		}
@@ -54,7 +54,7 @@ func (u *userUsecase) FindSentencePairs(ctx context.Context, param service.Tatoe
 func (u *userUsecase) FindSentenceBySentenceNumber(ctx context.Context, sentenceNumber int) (service.TatoebaSentence, error) {
 	var result service.TatoebaSentence
 	if err := u.db.Transaction(func(tx *gorm.DB) error {
-		rf, err := u.rf(ctx, tx)
+		rf, err := u.rfFunc(ctx, tx)
 		if err != nil {
 			return err
 		}

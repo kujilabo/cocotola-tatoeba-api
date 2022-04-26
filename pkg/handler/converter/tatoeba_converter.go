@@ -5,6 +5,7 @@ import (
 
 	"github.com/kujilabo/cocotola-tatoeba-api/pkg/handler/entity"
 	"github.com/kujilabo/cocotola-tatoeba-api/pkg/service"
+	libD "github.com/kujilabo/cocotola-tatoeba-api/pkg_lib/domain"
 )
 
 func ToTatoebaSentenceSearchCondition(ctx context.Context, param *entity.TatoebaSentenceFindParameter) (service.TatoebaSentenceSearchCondition, error) {
@@ -16,18 +17,26 @@ func ToTatoebaSentenceFindResponse(ctx context.Context, result service.TatoebaSe
 	for i, m := range result.GetResults() {
 		src := entity.TatoebaSentenceResponse{
 			SentenceNumber: m.GetSrc().GetSentenceNumber(),
-			Lang:           m.GetSrc().GetLang().String(),
+			Lang:           m.GetSrc().GetLang().ToLang2().String(),
 			Text:           m.GetSrc().GetText(),
 			Author:         m.GetSrc().GetAuthor(),
 			UpdatedAt:      m.GetSrc().GetUpdatedAt(),
 		}
+		if err := libD.Validator.Struct(src); err != nil {
+			return nil, err
+		}
+
 		dst := entity.TatoebaSentenceResponse{
 			SentenceNumber: m.GetDst().GetSentenceNumber(),
-			Lang:           m.GetDst().GetLang().String(),
+			Lang:           m.GetDst().GetLang().ToLang2().String(),
 			Text:           m.GetDst().GetText(),
 			Author:         m.GetDst().GetAuthor(),
 			UpdatedAt:      m.GetDst().GetUpdatedAt(),
 		}
+		if err := libD.Validator.Struct(dst); err != nil {
+			return nil, err
+		}
+
 		entities[i] = entity.TatoebaSentencePair{
 			Src: src,
 			Dst: dst,
@@ -41,11 +50,12 @@ func ToTatoebaSentenceFindResponse(ctx context.Context, result service.TatoebaSe
 }
 
 func ToTatoebaSentenceResponse(ctx context.Context, result service.TatoebaSentence) (*entity.TatoebaSentenceResponse, error) {
-	return &entity.TatoebaSentenceResponse{
+	e := &entity.TatoebaSentenceResponse{
 		SentenceNumber: result.GetSentenceNumber(),
-		Lang:           result.GetLang().String(),
+		Lang:           result.GetLang().ToLang2().String(),
 		Text:           result.GetText(),
 		Author:         result.GetAuthor(),
 		UpdatedAt:      result.GetUpdatedAt(),
-	}, nil
+	}
+	return e, libD.Validator.Struct(e)
 }

@@ -4,11 +4,10 @@ import "golang.org/x/xerrors"
 
 const Lang2Len = 2
 const Lang3Len = 3
-const Lang5Len = 5
 
 type Lang2 interface {
 	String() string
-	ToLang3() string
+	ToLang3() Lang3
 }
 
 type lang2 struct {
@@ -29,19 +28,20 @@ func (l *lang2) String() string {
 	return l.value
 }
 
-func (l *lang2) ToLang3() string {
+func (l *lang2) ToLang3() Lang3 {
 	switch l.value {
 	case "en":
-		return "eng"
+		return Lang3ENG
 	case "ja":
-		return "jpn"
+		return Lang3JPN
 	default:
-		return "___"
+		return Lang3Unknown
 	}
 }
 
 type Lang3 interface {
 	String() string
+	ToLang2() Lang2
 }
 
 type lang3 struct {
@@ -61,37 +61,13 @@ func NewLang3(lang string) (Lang3, error) {
 func (l *lang3) String() string {
 	return l.value
 }
-
-type Lang5 interface {
-	String() string
-	ToLang2() string
-}
-
-type lang5 struct {
-	value string
-}
-
-func NewLang5(lang string) (Lang5, error) {
-	if len(lang) != Lang5Len {
-		return nil, xerrors.Errorf("invalid parameter. Lang5: %s", lang)
-	}
-
-	return &lang5{
-		value: lang,
-	}, nil
-}
-
-func (l *lang5) String() string {
-	return l.value
-}
-
-func (l *lang5) ToLang2() string {
+func (l *lang3) ToLang2() Lang2 {
 	switch l.value {
 	case "eng":
-		return "en"
+		return Lang2EN
 	case "jpn":
-		return "ja"
+		return Lang2JA
 	default:
-		return "__"
+		return Lang2Unknown
 	}
 }
