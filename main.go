@@ -88,6 +88,7 @@ func main() {
 	v1 := router.Group("v1")
 	{
 		v1.Use(otelgin.Middleware(cfg.App.Name))
+		v1.Use(middleware.NewTraceLogMiddleware(cfg.App.Name))
 		v1.Use(authMiddleware)
 		{
 			newSentenceReader := func(reader io.Reader) service.TatoebaSentenceAddParameterIterator {
