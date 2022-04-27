@@ -23,7 +23,7 @@ const (
 
 type tatoebaSentenceEntity struct {
 	SentenceNumber int
-	Lang           string
+	Lang3          string
 	Text           string
 	Author         string
 	UpdatedAt      time.Time
@@ -31,19 +31,19 @@ type tatoebaSentenceEntity struct {
 
 type tatoebaSentencePairEntity struct {
 	SrcSentenceNumber int
-	SrcLang           string
+	SrcLang3          string
 	SrcText           string
 	SrcAuthor         string
 	SrcUpdatedAt      time.Time
 	DstSentenceNumber int
-	DstLang           string
+	DstLang3          string
 	DstText           string
 	DstAuthor         string
 	DstUpdatedAt      time.Time
 }
 
 func (e *tatoebaSentenceEntity) toModel() (service.TatoebaSentence, error) {
-	lang, err := domain.NewLang3(e.Lang)
+	lang3, err := domain.NewLang3(e.Lang3)
 	if err != nil {
 		return nil, xerrors.Errorf("failed to NewLang3. err: %w", err)
 	}
@@ -51,13 +51,13 @@ func (e *tatoebaSentenceEntity) toModel() (service.TatoebaSentence, error) {
 	if author == "\\N" {
 		author = ""
 	}
-	return service.NewTatoebaSentence(e.SentenceNumber, lang, e.Text, author, e.UpdatedAt)
+	return service.NewTatoebaSentence(e.SentenceNumber, lang3, e.Text, author, e.UpdatedAt)
 }
 
 func (e *tatoebaSentencePairEntity) toModel() (service.TatoebaSentencePair, error) {
 	srcE := tatoebaSentenceEntity{
 		SentenceNumber: e.SrcSentenceNumber,
-		Lang:           e.SrcLang,
+		Lang3:          e.SrcLang3,
 		Text:           e.SrcText,
 		Author:         e.SrcAuthor,
 		UpdatedAt:      e.SrcUpdatedAt,
@@ -69,7 +69,7 @@ func (e *tatoebaSentencePairEntity) toModel() (service.TatoebaSentencePair, erro
 
 	dstE := tatoebaSentenceEntity{
 		SentenceNumber: e.DstSentenceNumber,
-		Lang:           e.DstLang,
+		Lang3:          e.DstLang3,
 		Text:           e.DstText,
 		Author:         e.DstAuthor,
 		UpdatedAt:      e.DstUpdatedAt,
@@ -106,7 +106,7 @@ func NewTatoebaSentenceRepository(db *gorm.DB) (service.TatoebaSentenceRepositor
 // 	offset := (param.GetPageNo() - 1) * param.GetPageSize()
 
 // 	where := func() *gorm.DB {
-// 		db := r.db.Where("lang = 'eng'")
+// 		db := r.db.Where("lang3 = 'eng'")
 // 		if param.GetKeyword() != "" {
 // 			keyword := "%" + param.GetKeyword() + "%"
 // 			db = db.Where("text like ?", keyword)
@@ -146,7 +146,7 @@ func NewTatoebaSentenceRepository(db *gorm.DB) (service.TatoebaSentenceRepositor
 // inner join development.tatoeba_sentence t3
 // on t3.sentence_number= t2.`to`
 
-// where t1.lang='eng' and t3.lang='jpn';
+// where t1.lang3='eng' and t3.lang3='jpn';
 
 func (r *tatoebaSentenceRepository) FindTatoebaSentencePairs(ctx context.Context, param service.TatoebaSentenceSearchCondition) (service.TatoebaSentencePairSearchResult, error) {
 	logger := log.FromContext(ctx)
@@ -175,19 +175,19 @@ func (r *tatoebaSentenceRepository) findTatoebaSentences(ctx context.Context, pa
 		db := r.db.Table("tatoeba_sentence AS T1").Select(
 			// Src
 			"T1.sentence_number AS src_sentence_number," +
-				"T1.lang AS src_lang," +
+				"T1.lang3 AS src_lang3," +
 				"T1.text AS src_text," +
 				"T1.author AS src_author," +
 				"T1.updated_at AS src_updated_at," +
 				// Dst
 				"T3.sentence_number AS dst_sentence_number," +
-				"T3.lang AS dst_lang," +
+				"T3.lang3 AS dst_lang3," +
 				"T3.text AS dst_text," +
 				"T3.author AS dst_author," +
 				"T3.updated_at AS dst_updated_at").
 			Joins("INNER JOIN tatoeba_link AS T2 ON T1.sentence_number = T2.`from`").
 			Joins("INNER JOIN tatoeba_sentence AS T3 ON T3.sentence_number = T2.`to`").
-			Where("T1.lang = 'eng' AND T3.lang = 'jpn'")
+			Where("T1.lang3 = 'eng' AND T3.lang3 = 'jpn'")
 		if param.GetKeyword() != "" {
 			keyword1 := strings.ReplaceAll(param.GetKeyword(), "%", "\\%")
 			keyword2 := "%" + keyword1 + "%"
@@ -235,20 +235,20 @@ func (r *tatoebaSentenceRepository) findTatoebaSentencesByRandom(ctx context.Con
 		db := r.db.Table("tatoeba_sentence AS T1").Select(
 			// Src
 			"T1.sentence_number AS src_sentence_number," +
-				"T1.lang AS src_lang," +
+				"T1.lang3 AS src_lang3," +
 				"T1.text AS src_text," +
 				"T1.author AS src_author," +
 				"T1.updated_at AS src_updated_at," +
 				// Dst
 				"T3.sentence_number AS dst_sentence_number," +
-				"T3.lang AS dst_lang," +
+				"T3.lang3 AS dst_lang3," +
 				"T3.text AS dst_text," +
 				"T3.author AS dst_author," +
 				"T3.updated_at AS dst_updated_at").
 			Joins("INNER JOIN tatoeba_link AS T2 ON T1.sentence_number = T2.`from`").
 			Joins("INNER JOIN tatoeba_sentence AS T3 ON T3.sentence_number = T2.`to`").
 			Joins("INNER JOIN (SELECT CEIL(RAND() * (SELECT MAX(`sentence_number`) FROM `tatoeba_sentence`)) AS `sentence_number`) AS `tmp` ON T1.sentence_number >= tmp.sentence_number").
-			Where("T1.lang = 'eng' AND T3.lang = 'jpn'")
+			Where("T1.lang3 = 'eng' AND T3.lang3 = 'jpn'")
 		if param.GetKeyword() != "" {
 			keyword1 := strings.ReplaceAll(param.GetKeyword(), "%", "\\%")
 			keyword2 := "%" + keyword1 + "%"
@@ -316,7 +316,7 @@ func (r *tatoebaSentenceRepository) ContainsSentenceBySentenceNumber(ctx context
 func (r *tatoebaSentenceRepository) Add(ctx context.Context, param service.TatoebaSentenceAddParameter) error {
 	entity := tatoebaSentenceEntity{
 		SentenceNumber: param.GetSentenceNumber(),
-		Lang:           param.GetLang().String(),
+		Lang3:          param.GetLang3().String(),
 		Text:           param.GetText(),
 		Author:         param.GetAuthor(),
 		UpdatedAt:      param.GetUpdatedAt(),

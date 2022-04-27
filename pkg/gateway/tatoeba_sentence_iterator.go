@@ -84,7 +84,7 @@ func (r *tatoebaSentenceAddParameterReader) Next(ctx context.Context) (service.T
 		return nil, xerrors.Errorf("failed to parse sentenceNumber. rowNumber: %d, value: %s, err: %w", r.num, line[0], err)
 	}
 
-	lang, err := domain.NewLang3(line[1])
+	lang3, err := domain.NewLang3(line[1])
 	if err != nil {
 		return nil, xerrors.Errorf("failed to NewLang3. rowNumber: %d, value: %s, err: %w", r.num, line[1], err)
 	}
@@ -119,7 +119,7 @@ func (r *tatoebaSentenceAddParameterReader) Next(ctx context.Context) (service.T
 		updatedAt = timeTmp
 	}
 
-	param, err := service.NewTatoebaSentenceAddParameter(sentenceNumber, lang, text, author, updatedAt)
+	param, err := service.NewTatoebaSentenceAddParameter(sentenceNumber, lang3, text, author, updatedAt)
 	if err != nil {
 		return nil, xerrors.Errorf("failed to NewTatoebaSentenceAddParameter. rowNumber: %d, values: %v, err: %w", r.num, line, err)
 	}

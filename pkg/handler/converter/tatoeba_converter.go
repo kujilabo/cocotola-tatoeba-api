@@ -17,7 +17,7 @@ func ToTatoebaSentenceFindResponse(ctx context.Context, result service.TatoebaSe
 	for i, m := range result.GetResults() {
 		src := entity.TatoebaSentenceResponse{
 			SentenceNumber: m.GetSrc().GetSentenceNumber(),
-			Lang:           m.GetSrc().GetLang().ToLang2().String(),
+			Lang2:          m.GetSrc().GetLang3().ToLang2().String(),
 			Text:           m.GetSrc().GetText(),
 			Author:         m.GetSrc().GetAuthor(),
 			UpdatedAt:      m.GetSrc().GetUpdatedAt(),
@@ -28,7 +28,7 @@ func ToTatoebaSentenceFindResponse(ctx context.Context, result service.TatoebaSe
 
 		dst := entity.TatoebaSentenceResponse{
 			SentenceNumber: m.GetDst().GetSentenceNumber(),
-			Lang:           m.GetDst().GetLang().ToLang2().String(),
+			Lang2:          m.GetDst().GetLang3().ToLang2().String(),
 			Text:           m.GetDst().GetText(),
 			Author:         m.GetDst().GetAuthor(),
 			UpdatedAt:      m.GetDst().GetUpdatedAt(),
@@ -52,7 +52,7 @@ func ToTatoebaSentenceFindResponse(ctx context.Context, result service.TatoebaSe
 func ToTatoebaSentenceResponse(ctx context.Context, result service.TatoebaSentence) (*entity.TatoebaSentenceResponse, error) {
 	e := &entity.TatoebaSentenceResponse{
 		SentenceNumber: result.GetSentenceNumber(),
-		Lang:           result.GetLang().ToLang2().String(),
+		Lang2:          result.GetLang3().ToLang2().String(),
 		Text:           result.GetText(),
 		Author:         result.GetAuthor(),
 		UpdatedAt:      result.GetUpdatedAt(),
