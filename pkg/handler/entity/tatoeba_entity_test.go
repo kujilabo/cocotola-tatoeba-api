@@ -17,26 +17,26 @@ func Test_TatoebaSentenceResponse_validation(t *testing.T) {
 		wantErrMsg string
 	}{
 		{
-			name: "lang is 'en'",
+			name: "lang2 is 'en'",
 			entity: entity.TatoebaSentenceResponse{
-				Lang: "en",
+				Lang2: "en",
 			},
 			wantErr: false,
 		},
 		{
-			name: "lang is 'ja'",
+			name: "lang2 is 'ja'",
 			entity: entity.TatoebaSentenceResponse{
-				Lang: "ja",
+				Lang2: "ja",
 			},
 			wantErr: false,
 		},
 		{
-			name: "lang is 'es'",
+			name: "lang2 is 'es'",
 			entity: entity.TatoebaSentenceResponse{
-				Lang: "es",
+				Lang2: "es",
 			},
 			wantErr:    true,
-			wantErrMsg: "Key: 'TatoebaSentenceResponse.Lang' Error:Field validation for 'Lang' failed on the 'oneof' tag",
+			wantErrMsg: "Key: 'TatoebaSentenceResponse.Lang2' Error:Field validation for 'Lang2' failed on the 'oneof' tag",
 		},
 	}
 	for _, tt := range tests {

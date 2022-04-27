@@ -1,5 +1,5 @@
 ---
-test-mysql:
+test-tatoeba-mysql:
   image: mysql:8.0.27
   container_name: test-tatoeba-mysql
   command: mysqld --character-set-server=utf8mb4

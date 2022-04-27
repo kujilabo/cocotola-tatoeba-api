@@ -20,7 +20,7 @@ var ErrTatoebaSentenceNotFound = errors.New("tatoebaSentence not found")
 
 type TatoebaSentence interface {
 	GetSentenceNumber() int
-	GetLang() domain.Lang3
+	GetLang3() domain.Lang3
 	GetText() string
 	GetAuthor() string
 	GetUpdatedAt() time.Time
@@ -28,16 +28,16 @@ type TatoebaSentence interface {
 
 type tatoebaSentence struct {
 	SentenceNumber int
-	Lang           domain.Lang3
+	Lang3          domain.Lang3
 	Text           string
 	Author         string
 	UpdatedAt      time.Time
 }
 
-func NewTatoebaSentence(sentenceNumber int, lang domain.Lang3, text, author string, updatedAt time.Time) (TatoebaSentence, error) {
+func NewTatoebaSentence(sentenceNumber int, lang3 domain.Lang3, text, author string, updatedAt time.Time) (TatoebaSentence, error) {
 	m := &tatoebaSentence{
 		SentenceNumber: sentenceNumber,
-		Lang:           lang,
+		Lang3:          lang3,
 		Text:           text,
 		Author:         author,
 		UpdatedAt:      updatedAt,
@@ -50,8 +50,8 @@ func (m *tatoebaSentence) GetSentenceNumber() int {
 	return m.SentenceNumber
 }
 
-func (m *tatoebaSentence) GetLang() domain.Lang3 {
-	return m.Lang
+func (m *tatoebaSentence) GetLang3() domain.Lang3 {
+	return m.Lang3
 }
 
 func (m *tatoebaSentence) GetText() string {
@@ -95,7 +95,7 @@ func (m *tatoebaSentencePair) GetDst() TatoebaSentence {
 
 type TatoebaSentenceAddParameter interface {
 	GetSentenceNumber() int
-	GetLang() domain.Lang3
+	GetLang3() domain.Lang3
 	GetText() string
 	GetAuthor() string
 	GetUpdatedAt() time.Time
@@ -103,16 +103,16 @@ type TatoebaSentenceAddParameter interface {
 
 type tatoebaSentenceAddParameter struct {
 	SentenceNumber int `validate:"required"`
-	Lang           domain.Lang3
+	Lang3          domain.Lang3
 	Text           string `validate:"required"`
 	Author         string `validate:"required"`
 	UpdatedAt      time.Time
 }
 
-func NewTatoebaSentenceAddParameter(sentenceNumber int, lang domain.Lang3, text, author string, updatedAt time.Time) (TatoebaSentenceAddParameter, error) {
+func NewTatoebaSentenceAddParameter(sentenceNumber int, lang3 domain.Lang3, text, author string, updatedAt time.Time) (TatoebaSentenceAddParameter, error) {
 	m := &tatoebaSentenceAddParameter{
 		SentenceNumber: sentenceNumber,
-		Lang:           lang,
+		Lang3:          lang3,
 		Text:           text,
 		Author:         author,
 		UpdatedAt:      updatedAt,
@@ -125,8 +125,8 @@ func (p *tatoebaSentenceAddParameter) GetSentenceNumber() int {
 	return p.SentenceNumber
 }
 
-func (p *tatoebaSentenceAddParameter) GetLang() domain.Lang3 {
-	return p.Lang
+func (p *tatoebaSentenceAddParameter) GetLang3() domain.Lang3 {
+	return p.Lang3
 }
 
 func (p *tatoebaSentenceAddParameter) GetText() string {
