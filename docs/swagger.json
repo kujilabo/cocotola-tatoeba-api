@@ -12,12 +12,6 @@
                     }
                 ],
                 "description": "import links",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
                 "tags": [
                     "tatoeba"
                 ],
@@ -37,6 +31,12 @@
                     },
                     "400": {
                         "description": ""
+                    },
+                    "401": {
+                        "description": ""
+                    },
+                    "500": {
+                        "description": ""
                     }
                 }
             }
@@ -49,12 +49,6 @@
                     }
                 ],
                 "description": "import sentences",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
                 "tags": [
                     "tatoeba"
                 ],
@@ -73,6 +67,12 @@
                         "description": ""
                     },
                     "400": {
+                        "description": ""
+                    },
+                    "401": {
+                        "description": ""
+                    },
+                    "500": {
                         "description": ""
                     }
                 }
@@ -222,8 +222,12 @@
                 "author": {
                     "type": "string"
                 },
-                "lang": {
-                    "type": "string"
+                "lang2": {
+                    "type": "string",
+                    "enum": [
+                        "ja",
+                        "en"
+                    ]
                 },
                 "sentenceNumber": {
                     "type": "integer"

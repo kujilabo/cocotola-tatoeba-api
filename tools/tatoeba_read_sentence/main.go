@@ -11,7 +11,7 @@ import (
 
 	"github.com/pkg/profile"
 
-	"github.com/kujilabo/cocotola-tatoeba-api/pkg/gateway"
+	"github.com/kujilabo/cocotola-tatoeba-api/src/app/gateway"
 )
 
 func run(fileName string) (map[int]bool, error) {
