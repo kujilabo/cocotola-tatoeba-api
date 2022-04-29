@@ -31,12 +31,6 @@ var doc = `{
                     }
                 ],
                 "description": "import links",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
                 "tags": [
                     "tatoeba"
                 ],
@@ -56,6 +50,12 @@ var doc = `{
                     },
                     "400": {
                         "description": ""
+                    },
+                    "401": {
+                        "description": ""
+                    },
+                    "500": {
+                        "description": ""
                     }
                 }
             }
@@ -68,12 +68,6 @@ var doc = `{
                     }
                 ],
                 "description": "import sentences",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
                 "tags": [
                     "tatoeba"
                 ],
@@ -92,6 +86,12 @@ var doc = `{
                         "description": ""
                     },
                     "400": {
+                        "description": ""
+                    },
+                    "401": {
+                        "description": ""
+                    },
+                    "500": {
                         "description": ""
                     }
                 }
@@ -241,8 +241,12 @@ var doc = `{
                 "author": {
                     "type": "string"
                 },
-                "lang": {
-                    "type": "string"
+                "lang2": {
+                    "type": "string",
+                    "enum": [
+                        "ja",
+                        "en"
+                    ]
                 },
                 "sentenceNumber": {
                     "type": "integer"

@@ -1,10 +1,13 @@
-.PHONY: gen-src unit-test docker-up docker-down test-docker-up test-docker-down docker-clear
+.PHONY: gen-src unit-test swagger docker-up docker-down test-docker-up test-docker-down docker-clear
 
 gen-src:
-	@go generate ./...
+	@go generate ./src/...
 
 unit-test:
-	@go test -v -short ./...
+	@go test -v -short ./src/...
+
+swagger:
+	@swag init -d src
 
 docker-up:
 	@docker-compose -f docker/development/docker-compose.yml up -d
@@ -12,14 +15,14 @@ docker-up:
 	# @chmod -R 777 docker/development
 
 docker-down:
-	@chmod -R 777 docker/development
+	# @chmod -R 777 docker/development
 	@docker-compose -f docker/development/docker-compose.yml down
-	@chmod -R 777 docker/development
+	# @chmod -R 777 docker/development
 
 test-docker-up:
 	@docker-compose -f docker/test/docker-compose.yml up -d
 	sleep 10
-	@chmod -R 777 docker/test
+	# @chmod -R 777 docker/test
 
 test-docker-down:
 	@docker-compose -f docker/test/docker-compose.yml down

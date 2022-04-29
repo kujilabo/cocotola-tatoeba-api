@@ -35,7 +35,10 @@ definitions:
     properties:
       author:
         type: string
-      lang:
+      lang2:
+        enum:
+        - ja
+        - en
         type: string
       sentenceNumber:
         type: integer
@@ -49,8 +52,6 @@ info:
 paths:
   /v1/admin/link/import:
     post:
-      consumes:
-      - application/json
       description: import links
       parameters:
       - description: links.csv
@@ -58,12 +59,14 @@ paths:
         name: file
         required: true
         type: file
-      produces:
-      - application/json
       responses:
         "200":
           description: ""
         "400":
+          description: ""
+        "401":
+          description: ""
+        "500":
           description: ""
       security:
       - BasicAuth: []
@@ -72,8 +75,6 @@ paths:
       - tatoeba
   /v1/admin/sentence/import:
     post:
-      consumes:
-      - application/json
       description: import sentences
       parameters:
       - description: '***_sentences_detailed.tsv'
@@ -81,12 +82,14 @@ paths:
         name: file
         required: true
         type: file
-      produces:
-      - application/json
       responses:
         "200":
           description: ""
         "400":
+          description: ""
+        "401":
+          description: ""
+        "500":
           description: ""
       security:
       - BasicAuth: []

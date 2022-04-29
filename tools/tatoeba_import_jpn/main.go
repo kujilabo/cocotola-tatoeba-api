@@ -9,10 +9,10 @@ import (
 	"os"
 	"time"
 
-	"github.com/kujilabo/cocotola-tatoeba-api/pkg/config"
+	"github.com/kujilabo/cocotola-tatoeba-api/src/app/config"
 )
 
-var timeoutImportMin = 20
+var timeoutImportMin = 30
 
 func main() {
 	cfg, err := config.LoadConfig("local")
