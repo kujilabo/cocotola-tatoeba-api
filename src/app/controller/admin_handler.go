@@ -1,4 +1,4 @@
-package handler
+package controller
 
 import (
 	"errors"
@@ -7,7 +7,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 
-	handlerhelper "github.com/kujilabo/cocotola-tatoeba-api/src/app/handler/helper"
+	handlerhelper "github.com/kujilabo/cocotola-tatoeba-api/src/app/controller/helper"
 	"github.com/kujilabo/cocotola-tatoeba-api/src/app/service"
 	"github.com/kujilabo/cocotola-tatoeba-api/src/app/usecase"
 	liberrors "github.com/kujilabo/cocotola-tatoeba-api/src/lib/errors"

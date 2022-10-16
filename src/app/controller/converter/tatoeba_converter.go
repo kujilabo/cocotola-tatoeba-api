@@ -3,7 +3,7 @@ package converter
 import (
 	"context"
 
-	"github.com/kujilabo/cocotola-tatoeba-api/src/app/handler/entity"
+	"github.com/kujilabo/cocotola-tatoeba-api/src/app/controller/entity"
 	"github.com/kujilabo/cocotola-tatoeba-api/src/app/service"
 	libD "github.com/kujilabo/cocotola-tatoeba-api/src/lib/domain"
 )
