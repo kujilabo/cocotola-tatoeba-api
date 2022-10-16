@@ -7,12 +7,12 @@ import (
 	"strings"
 	"time"
 
-	"golang.org/x/xerrors"
 	"gorm.io/gorm"
 
 	"github.com/kujilabo/cocotola-tatoeba-api/src/app/domain"
 	"github.com/kujilabo/cocotola-tatoeba-api/src/app/service"
 	libD "github.com/kujilabo/cocotola-tatoeba-api/src/lib/domain"
+	liberrors "github.com/kujilabo/cocotola-tatoeba-api/src/lib/errors"
 	libG "github.com/kujilabo/cocotola-tatoeba-api/src/lib/gateway"
 	"github.com/kujilabo/cocotola-tatoeba-api/src/lib/log"
 )
@@ -45,7 +45,7 @@ type tatoebaSentencePairEntity struct {
 func (e *tatoebaSentenceEntity) toModel() (service.TatoebaSentence, error) {
 	lang3, err := domain.NewLang3(e.Lang3)
 	if err != nil {
-		return nil, xerrors.Errorf("failed to NewLang3. err: %w", err)
+		return nil, liberrors.Errorf("failed to NewLang3. err: %w", err)
 	}
 	author := e.Author
 	if author == "\\N" {
@@ -327,7 +327,7 @@ func (r *tatoebaSentenceRepository) Add(ctx context.Context, param service.Tatoe
 
 	if result := r.db.Create(&entity); result.Error != nil {
 		err := libG.ConvertDuplicatedError(result.Error, service.ErrTatoebaSentenceAlreadyExists)
-		return xerrors.Errorf("failed to Add tatoebaSentence. err: %w", err)
+		return liberrors.Errorf("failed to Add tatoebaSentence. err: %w", err)
 	}
 
 	return nil

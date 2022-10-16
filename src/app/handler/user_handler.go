@@ -4,13 +4,13 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"golang.org/x/xerrors"
 
 	"github.com/kujilabo/cocotola-tatoeba-api/src/app/handler/converter"
 	"github.com/kujilabo/cocotola-tatoeba-api/src/app/handler/entity"
 	handlerhelper "github.com/kujilabo/cocotola-tatoeba-api/src/app/handler/helper"
 	"github.com/kujilabo/cocotola-tatoeba-api/src/app/usecase"
 	lib "github.com/kujilabo/cocotola-tatoeba-api/src/lib/domain"
+	liberrors "github.com/kujilabo/cocotola-tatoeba-api/src/lib/errors"
 	"github.com/kujilabo/cocotola-tatoeba-api/src/lib/ginhelper"
 	"github.com/kujilabo/cocotola-tatoeba-api/src/lib/log"
 )
@@ -32,8 +32,8 @@ func NewUserHandler(userUsecase usecase.UserUsecase) UserHandler {
 }
 
 // FindSentencePairs godoc
-// @Summary     import links
-// @Description import links
+// @Summary     find pair of sentences
+// @Description find pair of sentences
 // @Tags        tatoeba
 // @Accept      json
 // @Produce     json
@@ -56,15 +56,15 @@ func (h *userHandler) FindSentencePairs(c *gin.Context) {
 		logger.Debugf("FindSentencePairs. param: %+v", param)
 		parameter, err := converter.ToTatoebaSentenceSearchCondition(ctx, &param)
 		if err != nil {
-			return err
+			return liberrors.Errorf("convert parameter to TatoebaSentenceSearchCondition. err: %w", err)
 		}
 		result, err := h.userUsecase.FindSentencePairs(ctx, parameter)
 		if err != nil {
-			return xerrors.Errorf("failed to FindSentences. err: %w", err)
+			return liberrors.Errorf("execute FindSentencePairs. err: %w", err)
 		}
 		response, err := converter.ToTatoebaSentenceFindResponse(ctx, result)
 		if err != nil {
-			return err
+			return liberrors.Errorf("convert result to TatoebaSentenceFindResponse. err: %w", err)
 		}
 
 		c.JSON(http.StatusOK, response)
@@ -94,11 +94,11 @@ func (h *userHandler) FindSentenceBySentenceNumber(c *gin.Context) {
 
 		result, err := h.userUsecase.FindSentenceBySentenceNumber(ctx, sentenceNumber)
 		if err != nil {
-			return xerrors.Errorf("failed to FindSentences. err: %w", err)
+			return liberrors.Errorf("execute FindSentenceBySentenceNumber. err: %w", err)
 		}
 		response, err := converter.ToTatoebaSentenceResponse(ctx, result)
 		if err != nil {
-			return err
+			return liberrors.Errorf("convert result to TatoebaSentenceResponse. err: %w", err)
 		}
 
 		c.JSON(http.StatusOK, response)
@@ -109,6 +109,6 @@ func (h *userHandler) FindSentenceBySentenceNumber(c *gin.Context) {
 func (h *userHandler) errorHandle(c *gin.Context, err error) bool {
 	ctx := c.Request.Context()
 	logger := log.FromContext(ctx)
-	logger.Errorf("userHandler. err: %v", err)
+	logger.Errorf("userHandler. err: %+v", err)
 	return false
 }

@@ -20,7 +20,6 @@ import (
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/propagation"
 	sdktrace "go.opentelemetry.io/otel/sdk/trace"
-	"golang.org/x/xerrors"
 	"gorm.io/gorm"
 
 	swaggerFiles "github.com/swaggo/files"     // swagger embed files
@@ -32,6 +31,7 @@ import (
 	"github.com/kujilabo/cocotola-tatoeba-api/src/app/handler"
 	"github.com/kujilabo/cocotola-tatoeba-api/src/app/service"
 	"github.com/kujilabo/cocotola-tatoeba-api/src/app/usecase"
+	liberrors "github.com/kujilabo/cocotola-tatoeba-api/src/lib/errors"
 	"github.com/kujilabo/cocotola-tatoeba-api/src/lib/handler/middleware"
 )
 
@@ -62,6 +62,8 @@ func main() {
 		logrus.Info(sig)
 		done <- true
 	}()
+
+	liberrors.UseXerrorsErrorf()
 
 	cfg, db, sqlDB, router, tp, err := initialize(ctx, *env)
 	if err != nil {
@@ -166,7 +168,7 @@ func initialize(ctx context.Context, env string) (*config.Config, *gorm.DB, *sql
 	// tracer
 	tp, err := config.InitTracerProvider(cfg)
 	if err != nil {
-		return nil, nil, nil, nil, nil, xerrors.Errorf("failed to InitTracerProvider. err: %w", err)
+		return nil, nil, nil, nil, nil, liberrors.Errorf("failed to InitTracerProvider. err: %w", err)
 	}
 	otel.SetTracerProvider(tp)
 	otel.SetTextMapPropagator(propagation.NewCompositeTextMapPropagator(propagation.TraceContext{}, propagation.Baggage{}))
@@ -174,7 +176,7 @@ func initialize(ctx context.Context, env string) (*config.Config, *gorm.DB, *sql
 	// init db
 	db, sqlDB, err := config.InitDB(cfg.DB)
 	if err != nil {
-		return nil, nil, nil, nil, nil, xerrors.Errorf("failed to InitDB. err: %w", err)
+		return nil, nil, nil, nil, nil, liberrors.Errorf("failed to InitDB. err: %w", err)
 	}
 
 	if !cfg.Debug.GinMode {
