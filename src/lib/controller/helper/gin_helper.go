@@ -1,4 +1,4 @@
-package ginhelper
+package helper
 
 import (
 	"strconv"

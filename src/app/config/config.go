@@ -13,8 +13,9 @@ import (
 )
 
 type AppConfig struct {
-	Name string `yaml:"name" validate:"required"`
-	Port int    `yaml:"port" validate:"required"`
+	Name        string `yaml:"name" validate:"required"`
+	HTTPPort    int    `yaml:"httpPort" validate:"required"`
+	MetricsPort int    `yaml:"metricsPort" validate:"required"`
 }
 
 type SQLite3Config struct {
@@ -63,8 +64,9 @@ type LogConfig struct {
 }
 
 type SwaggerConfig struct {
-	Host   string `yaml:"host"`
-	Schema string `yaml:"schema"`
+	Enabled bool   `yaml:"enabled"`
+	Host    string `yaml:"host"`
+	Schema  string `yaml:"schema"`
 }
 
 type DebugConfig struct {

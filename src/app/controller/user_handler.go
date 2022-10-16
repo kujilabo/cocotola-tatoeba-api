@@ -1,17 +1,17 @@
-package handler
+package controller
 
 import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 
-	"github.com/kujilabo/cocotola-tatoeba-api/src/app/handler/converter"
-	"github.com/kujilabo/cocotola-tatoeba-api/src/app/handler/entity"
-	handlerhelper "github.com/kujilabo/cocotola-tatoeba-api/src/app/handler/helper"
+	"github.com/kujilabo/cocotola-tatoeba-api/src/app/controller/converter"
+	"github.com/kujilabo/cocotola-tatoeba-api/src/app/controller/entity"
+	handlerhelper "github.com/kujilabo/cocotola-tatoeba-api/src/app/controller/helper"
 	"github.com/kujilabo/cocotola-tatoeba-api/src/app/usecase"
-	lib "github.com/kujilabo/cocotola-tatoeba-api/src/lib/domain"
+	"github.com/kujilabo/cocotola-tatoeba-api/src/lib/controller/helper"
+	libD "github.com/kujilabo/cocotola-tatoeba-api/src/lib/domain"
 	liberrors "github.com/kujilabo/cocotola-tatoeba-api/src/lib/errors"
-	"github.com/kujilabo/cocotola-tatoeba-api/src/lib/ginhelper"
 	"github.com/kujilabo/cocotola-tatoeba-api/src/lib/log"
 )
 
@@ -87,9 +87,9 @@ func (h *userHandler) FindSentencePairs(c *gin.Context) {
 func (h *userHandler) FindSentenceBySentenceNumber(c *gin.Context) {
 	ctx := c.Request.Context()
 	handlerhelper.HandleFunction(c, func() error {
-		sentenceNumber, err := ginhelper.GetIntFromPath(c, "sentenceNumber")
+		sentenceNumber, err := helper.GetIntFromPath(c, "sentenceNumber")
 		if err != nil {
-			return lib.ErrInvalidArgument
+			return libD.ErrInvalidArgument
 		}
 
 		result, err := h.userUsecase.FindSentenceBySentenceNumber(ctx, sentenceNumber)

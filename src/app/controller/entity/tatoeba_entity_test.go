@@ -5,7 +5,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/kujilabo/cocotola-tatoeba-api/src/app/handler/entity"
+	"github.com/kujilabo/cocotola-tatoeba-api/src/app/controller/entity"
 	libD "github.com/kujilabo/cocotola-tatoeba-api/src/lib/domain"
 )
 

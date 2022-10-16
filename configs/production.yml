@@ -1,7 +1,8 @@
 ---
 app:
   name: cocotola-tatoeba-api
-  port: 8080
+  httpPort: 8080
+  metricsPort: 8081
 db:
   # driverName: sqlite3
   # sqlite3:
@@ -27,6 +28,7 @@ shutdown:
 log:
   level: $LOG_LEVEL
 swagger:
+  enabled: false
   host: cocotola.com
   schema: https
 debug:
