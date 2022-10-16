@@ -6,11 +6,11 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"golang.org/x/xerrors"
 
 	handlerhelper "github.com/kujilabo/cocotola-tatoeba-api/src/app/handler/helper"
 	"github.com/kujilabo/cocotola-tatoeba-api/src/app/service"
 	"github.com/kujilabo/cocotola-tatoeba-api/src/app/usecase"
+	liberrors "github.com/kujilabo/cocotola-tatoeba-api/src/lib/errors"
 	"github.com/kujilabo/cocotola-tatoeba-api/src/lib/log"
 )
 
@@ -65,14 +65,14 @@ func (h *adminHandler) ImportSentences(c *gin.Context) {
 
 		multipartFile, err := file.Open()
 		if err != nil {
-			return xerrors.Errorf("failed to file.Open. err: %w", err)
+			return liberrors.Errorf("failed to file.Open. err: %w", err)
 		}
 		defer multipartFile.Close()
 
 		iterator := h.newTatoebaSentenceAddParameterReader(multipartFile)
 
 		if err := h.adminUsecase.ImportSentences(ctx, iterator); err != nil {
-			return xerrors.Errorf("failed to ImportSentences. err: %w", err)
+			return liberrors.Errorf("failed to ImportSentences. err: %w", err)
 		}
 
 		c.Status(http.StatusOK)
@@ -112,14 +112,14 @@ func (h *adminHandler) ImportLinks(c *gin.Context) {
 
 		multipartFile, err := file.Open()
 		if err != nil {
-			return xerrors.Errorf("failed to file.Open. err: %w", err)
+			return liberrors.Errorf("failed to file.Open. err: %w", err)
 		}
 		defer multipartFile.Close()
 
 		iterator := h.newTatoebaLinkAddParameterReader(multipartFile)
 
 		if err := h.adminUsecase.ImportLinks(ctx, iterator); err != nil {
-			return xerrors.Errorf("failed to ImportLinks. err: %w", err)
+			return liberrors.Errorf("failed to ImportLinks. err: %w", err)
 		}
 
 		c.Status(http.StatusOK)

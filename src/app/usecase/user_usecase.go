@@ -6,6 +6,7 @@ import (
 	"gorm.io/gorm"
 
 	"github.com/kujilabo/cocotola-tatoeba-api/src/app/service"
+	liberrors "github.com/kujilabo/cocotola-tatoeba-api/src/lib/errors"
 )
 
 type UserUsecase interface {
@@ -31,17 +32,17 @@ func (u *userUsecase) FindSentencePairs(ctx context.Context, param service.Tatoe
 	if err := u.db.Transaction(func(tx *gorm.DB) error {
 		rf, err := u.rfFunc(ctx, tx)
 		if err != nil {
-			return err
+			return liberrors.Errorf("create RepositoryFactory. err: %w", err)
 		}
 
 		repo, err := rf.NewTatoebaSentenceRepository(ctx)
 		if err != nil {
-			return err
+			return liberrors.Errorf("new TatoebaSentenceRepository. err: %w", err)
 		}
 
 		tmpResult, err := repo.FindTatoebaSentencePairs(ctx, param)
 		if err != nil {
-			return err
+			return liberrors.Errorf("execute FindTatoebaSentencePairs. err: %w", err)
 		}
 		result = tmpResult
 		return nil
@@ -56,17 +57,17 @@ func (u *userUsecase) FindSentenceBySentenceNumber(ctx context.Context, sentence
 	if err := u.db.Transaction(func(tx *gorm.DB) error {
 		rf, err := u.rfFunc(ctx, tx)
 		if err != nil {
-			return err
+			return liberrors.Errorf("create RepositoryFactory. err: %w", err)
 		}
 
 		repo, err := rf.NewTatoebaSentenceRepository(ctx)
 		if err != nil {
-			return err
+			return liberrors.Errorf("new TatoebaSentenceRepository. err: %w", err)
 		}
 
 		tmpResult, err := repo.FindTatoebaSentenceBySentenceNumber(ctx, sentenceNumber)
 		if err != nil {
-			return err
+			return liberrors.Errorf("execute FindTatoebaSentenceBySentenceNumber. err: %w", err)
 		}
 		result = tmpResult
 		return nil

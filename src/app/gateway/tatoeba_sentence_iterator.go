@@ -8,10 +8,9 @@ import (
 	"strings"
 	"time"
 
-	"golang.org/x/xerrors"
-
 	"github.com/kujilabo/cocotola-tatoeba-api/src/app/domain"
 	"github.com/kujilabo/cocotola-tatoeba-api/src/app/service"
+	liberrors "github.com/kujilabo/cocotola-tatoeba-api/src/lib/errors"
 	"github.com/kujilabo/cocotola-tatoeba-api/src/lib/log"
 )
 
@@ -81,12 +80,12 @@ func (r *tatoebaSentenceAddParameterReader) Next(ctx context.Context) (service.T
 
 	sentenceNumber, err := strconv.Atoi(line[0])
 	if err != nil {
-		return nil, xerrors.Errorf("failed to parse sentenceNumber. rowNumber: %d, value: %s, err: %w", r.num, line[0], err)
+		return nil, liberrors.Errorf("failed to parse sentenceNumber. rowNumber: %d, value: %s, err: %w", r.num, line[0], err)
 	}
 
 	lang3, err := domain.NewLang3(line[1])
 	if err != nil {
-		return nil, xerrors.Errorf("failed to NewLang3. rowNumber: %d, value: %s, err: %w", r.num, line[1], err)
+		return nil, liberrors.Errorf("failed to NewLang3. rowNumber: %d, value: %s, err: %w", r.num, line[1], err)
 	}
 
 	text := line[2]
@@ -114,14 +113,14 @@ func (r *tatoebaSentenceAddParameterReader) Next(ctx context.Context) (service.T
 
 		timeTmp, err := time.Parse("2006-01-02 15:04:05", timeS)
 		if err != nil {
-			return nil, xerrors.Errorf("failed to Parse. rowNumber: %d, value: %s, err: %w", r.num, timeS, err)
+			return nil, liberrors.Errorf("failed to Parse. rowNumber: %d, value: %s, err: %w", r.num, timeS, err)
 		}
 		updatedAt = timeTmp
 	}
 
 	param, err := service.NewTatoebaSentenceAddParameter(sentenceNumber, lang3, text, author, updatedAt)
 	if err != nil {
-		return nil, xerrors.Errorf("failed to NewTatoebaSentenceAddParameter. rowNumber: %d, values: %v, err: %w", r.num, line, err)
+		return nil, liberrors.Errorf("failed to NewTatoebaSentenceAddParameter. rowNumber: %d, values: %v, err: %w", r.num, line, err)
 	}
 
 	r.num++

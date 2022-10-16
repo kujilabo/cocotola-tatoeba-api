@@ -8,6 +8,7 @@ import (
 	"gorm.io/gorm"
 
 	"github.com/kujilabo/cocotola-tatoeba-api/src/app/service"
+	liberrors "github.com/kujilabo/cocotola-tatoeba-api/src/lib/errors"
 	"github.com/kujilabo/cocotola-tatoeba-api/src/lib/log"
 )
 
@@ -23,14 +24,14 @@ type AdminUsecase interface {
 }
 
 type adminUsecase struct {
-	db *gorm.DB
-	rf service.RepositoryFactoryFunc
+	db     *gorm.DB
+	rfFunc service.RepositoryFactoryFunc
 }
 
-func NewAdminUsecase(db *gorm.DB, rf service.RepositoryFactoryFunc) AdminUsecase {
+func NewAdminUsecase(db *gorm.DB, rfFunc service.RepositoryFactoryFunc) AdminUsecase {
 	return &adminUsecase{
-		db: db,
-		rf: rf,
+		db:     db,
+		rfFunc: rfFunc,
 	}
 }
 
@@ -43,14 +44,14 @@ func (u *adminUsecase) ImportSentences(ctx context.Context, iterator service.Tat
 	var loop = true
 	for loop {
 		if err := u.db.Transaction(func(tx *gorm.DB) error {
-			rf, err := u.rf(ctx, tx)
+			rf, err := u.rfFunc(ctx, tx)
 			if err != nil {
-				return err
+				return liberrors.Errorf("create RepositoryFactory. err: %w", err)
 			}
 
 			repo, err := rf.NewTatoebaSentenceRepository(ctx)
 			if err != nil {
-				return err
+				return liberrors.Errorf("new TatoebaSentenceRepository. err: %w", err)
 			}
 
 			i := 0
@@ -62,7 +63,7 @@ func (u *adminUsecase) ImportSentences(ctx context.Context, iterator service.Tat
 				}
 				readCount++
 				if err != nil {
-					return err
+					return liberrors.Errorf("read next line. read count: %d, err: %w", readCount, err)
 				}
 
 				if param == nil {
@@ -88,7 +89,7 @@ func (u *adminUsecase) ImportSentences(ctx context.Context, iterator service.Tat
 
 			return nil
 		}); err != nil {
-			return err
+			return liberrors.Errorf("import sentence. err: %w", err)
 		}
 	}
 
@@ -108,14 +109,14 @@ func (u *adminUsecase) ImportLinks(ctx context.Context, iterator service.Tatoeba
 	var loop = true
 	for loop {
 		if err := u.db.Transaction(func(tx *gorm.DB) error {
-			rf, err := u.rf(ctx, tx)
+			rf, err := u.rfFunc(ctx, tx)
 			if err != nil {
-				return err
+				return liberrors.Errorf("create RepositoryFactory. err: %w", err)
 			}
 
 			repo, err := rf.NewTatoebaLinkRepository(ctx)
 			if err != nil {
-				return err
+				return liberrors.Errorf("new TatoebaLinkRepository. err: %w", err)
 			}
 
 			i := 0
@@ -127,7 +128,7 @@ func (u *adminUsecase) ImportLinks(ctx context.Context, iterator service.Tatoeba
 				}
 				readCount++
 				if err != nil {
-					return err
+					return liberrors.Errorf("read next line. read count: %d, err: %w", readCount, err)
 				}
 				if param == nil {
 					skipCount++
@@ -153,7 +154,7 @@ func (u *adminUsecase) ImportLinks(ctx context.Context, iterator service.Tatoeba
 
 			return nil
 		}); err != nil {
-			return err
+			return liberrors.Errorf("import sentence. err: %w", err)
 		}
 	}
 

@@ -1,6 +1,6 @@
 package domain
 
-import "golang.org/x/xerrors"
+import liberrors "github.com/kujilabo/cocotola-tatoeba-api/src/lib/errors"
 
 const Lang2Len = 2
 const Lang3Len = 3
@@ -16,7 +16,7 @@ type lang2 struct {
 
 func NewLang2(lang string) (Lang2, error) {
 	if len(lang) != Lang2Len {
-		return nil, xerrors.Errorf("invalid parameter. Lang2: %s", lang)
+		return nil, liberrors.Errorf("invalid parameter. Lang2: %s", lang)
 	}
 
 	return &lang2{
@@ -50,7 +50,7 @@ type lang3 struct {
 
 func NewLang3(lang string) (Lang3, error) {
 	if len(lang) != Lang3Len {
-		return nil, xerrors.Errorf("invalid parameter. Lang3: %s", lang)
+		return nil, liberrors.Errorf("invalid parameter. Lang3: %s", lang)
 	}
 
 	return &lang3{

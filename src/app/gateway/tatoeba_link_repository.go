@@ -5,10 +5,10 @@ import (
 	"errors"
 	"fmt"
 
-	"golang.org/x/xerrors"
 	"gorm.io/gorm"
 
 	"github.com/kujilabo/cocotola-tatoeba-api/src/app/service"
+	liberrors "github.com/kujilabo/cocotola-tatoeba-api/src/lib/errors"
 	libG "github.com/kujilabo/cocotola-tatoeba-api/src/lib/gateway"
 )
 
@@ -61,7 +61,7 @@ func (r *tatoebaLinkRepository) Add(ctx context.Context, param service.TatoebaLi
 
 	if result := r.db.Create(&entity); result.Error != nil {
 		if err := libG.ConvertDuplicatedError(result.Error, service.ErrTatoebaLinkAlreadyExists); errors.Is(err, service.ErrTatoebaLinkAlreadyExists) {
-			return xerrors.Errorf("failed to Add tatoebaLink. err: %w", err)
+			return liberrors.Errorf("failed to Add tatoebaLink. err: %w", err)
 		}
 
 		if err := libG.ConvertRelationError(result.Error, service.ErrTatoebaLinkSourceNotFound); errors.Is(err, service.ErrTatoebaLinkSourceNotFound) {
@@ -70,7 +70,7 @@ func (r *tatoebaLinkRepository) Add(ctx context.Context, param service.TatoebaLi
 			return nil
 		}
 
-		return xerrors.Errorf("failed to Add tatoebaLink. err: %w", result.Error)
+		return liberrors.Errorf("failed to Add tatoebaLink. err: %w", result.Error)
 	}
 
 	return nil
